@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
                 || super.onSupportNavigateUp();
     }
 
-  // GIO  private class GetContacts extends AsyncTask<Void, Void, Void> {
+
         private class FetchDataTask extends AsyncTask<String, Void, String>{
 
             private static final String TAG = "con";
@@ -116,8 +116,7 @@ public class MainActivity extends AppCompatActivity {
                 return jsonFromServer;
 
             } else {
-            //    Log.e(TAG, "Couldn't get json from server.");
-                runOnUiThread(new Runnable() {
+                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         Toast.makeText(getApplicationContext(),
