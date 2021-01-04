@@ -51,32 +51,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-        /*
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, jsonFromServer, Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
 
-            }
-        });
-      //  DrawerLayout drawer = findViewById(R.id.drawer_layout);
-      //  NavigationView navigationView = findViewById(R.id.nav_view);
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow)
-                .setDrawerLayout(drawer)
-                .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
-        NavigationUI.setupWithNavController(navigationView, navController);
-    //    new GetContacts().execute();
-
-         */
         new FetchDataTask().execute(URL);
 
     }
@@ -109,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... params) {
-      //  protected Void doInBackground(Void... arg0) {
+
             HttpHandler sh = new HttpHandler();
             // Making a request to url and getting response
             // String url = "https://api.androidhive.info/contacts/";
@@ -164,9 +139,7 @@ public class MainActivity extends AppCompatActivity {
             //parse the JSON data and then display
             parseJSON(dataFetched);
         }
-       // protected void onPostExecute(Void result) {
-      //      super.onPostExecute(result);
-       // }
+
     }
 
     //GIO
@@ -209,8 +182,6 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
-
-    //END GIO
 }
 
 
