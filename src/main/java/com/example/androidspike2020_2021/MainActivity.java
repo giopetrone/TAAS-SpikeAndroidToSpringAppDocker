@@ -5,17 +5,26 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.Menu;
+import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
+import com.example.androidspike2020_2021.ui.home.HomeViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import androidx.navigation.NavController;
@@ -29,12 +38,20 @@ import androidx.appcompat.widget.Toolbar;
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
+   //GIO
     String jsonFromServer;
+    ListView listView;
+    ArrayList<String> tutorialList = new ArrayList<String>();
+    private final static String URL = "https://carlofontanos.com/api/tutorials.php?data=all";
+
+//END GIO
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
+        /*
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         FloatingActionButton fab = findViewById(R.id.fab);
@@ -43,10 +60,11 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Snackbar.make(view, jsonFromServer, Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+
             }
         });
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
+      //  DrawerLayout drawer = findViewById(R.id.drawer_layout);
+      //  NavigationView navigationView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
@@ -56,7 +74,11 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
-        new GetContacts().execute();
+    //    new GetContacts().execute();
+
+         */
+        new FetchDataTask().execute(URL);
+
     }
 
     @Override
@@ -72,8 +94,11 @@ public class MainActivity extends AppCompatActivity {
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
     }
-    private class GetContacts extends AsyncTask<Void, Void, Void> {
-        private static final String TAG = "con";
+
+  // GIO  private class GetContacts extends AsyncTask<Void, Void, Void> {
+        private class FetchDataTask extends AsyncTask<String, Void, String>{
+
+            private static final String TAG = "con";
 
         @Override
         protected void onPreExecute() {
@@ -83,7 +108,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        protected Void doInBackground(Void... arg0) {
+        protected String doInBackground(String... params) {
+      //  protected Void doInBackground(Void... arg0) {
             HttpHandler sh = new HttpHandler();
             // Making a request to url and getting response
             // String url = "https://api.androidhive.info/contacts/";
@@ -101,6 +127,7 @@ public class MainActivity extends AppCompatActivity {
 
             jsonFromServer = jsonStr;
             Log.e(TAG, "Response from url: " + jsonStr);
+
             if (jsonStr != null) {
                 try {
                     JSONObject jsonObj = new JSONObject(jsonStr);
@@ -110,13 +137,12 @@ public class MainActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                           // Toast.makeText(getApplicationContext(),
-                            //        "Json parsing error: " + e.getMessage(),
-                           //         Toast.LENGTH_LONG).show();
+                           // Toast.makeText(getApplicationContext(), "Json parsing error: " + e.getMessage(), Toast.LENGTH_LONG).show();
                         }
                     });
 
                 }
+                return jsonFromServer;
 
             } else {
             //    Log.e(TAG, "Couldn't get json from server.");
@@ -134,10 +160,57 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(Void result) {
-            super.onPostExecute(result);
+        protected void onPostExecute(String dataFetched) {
+            //parse the JSON data and then display
+            parseJSON(dataFetched);
+        }
+       // protected void onPostExecute(Void result) {
+      //      super.onPostExecute(result);
+       // }
+    }
+
+    //GIO
+    private String convertInputStreamToString(InputStream inputStream) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
+        String line = "";
+        String result = "";
+        while((line = bufferedReader.readLine()) != null)
+            result += line;
+
+        inputStream.close();
+        return result;
+
+    }
+
+    private void parseJSON(String data){
+
+        try{
+            JSONArray jsonMainNode = new JSONArray(data);
+
+            int jsonArrLength = jsonMainNode.length();
+
+            for(int i=0; i < jsonArrLength; i++) {
+                JSONObject jsonChildNode = jsonMainNode.getJSONObject(i);
+                String postTitle = jsonChildNode.getString("name");
+                tutorialList.add(postTitle);
+            }
+
+            // Get ListView object from xml
+            listView = (ListView) findViewById(R.id.list);
+
+            // Define a new Adapter
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, android.R.id.text1, tutorialList);
+
+            // Assign adapter to ListView
+            listView.setAdapter(adapter);
+
+        }catch(Exception e){
+            Log.i("App", "Error parsing data" +e.getMessage());
+
         }
     }
+
+    //END GIO
 }
 
 
