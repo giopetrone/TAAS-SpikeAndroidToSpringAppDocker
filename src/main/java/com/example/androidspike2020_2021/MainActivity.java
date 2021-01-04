@@ -38,13 +38,12 @@ import androidx.appcompat.widget.Toolbar;
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
-   //GIO
+
     String jsonFromServer;
     ListView listView;
     ArrayList<String> tutorialList = new ArrayList<String>();
     private final static String URL = "https://carlofontanos.com/api/tutorials.php?data=all";
 
-//END GIO
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,10 +85,7 @@ public class MainActivity extends AppCompatActivity {
         protected String doInBackground(String... params) {
 
             HttpHandler sh = new HttpHandler();
-            // Making a request to url and getting response
-            // String url = "https://api.androidhive.info/contacts/";
-            //per Spike1819
-            // String url = "http://192.168.1.11:8080/MavenEnterpriseApp-web/ServletAndroid";
+
 //new spike 2019-2020
             //      String url = "http://192.168.1.102:8080/api/customers";
             //        new spike 2020-2021
@@ -164,8 +160,11 @@ public class MainActivity extends AppCompatActivity {
 
             for(int i=0; i < jsonArrLength; i++) {
                 JSONObject jsonChildNode = jsonMainNode.getJSONObject(i);
-                String postTitle = jsonChildNode.getString("name");
-                tutorialList.add(postTitle);
+                String name = jsonChildNode.getString("name");
+                tutorialList.add(name);
+                String age = jsonChildNode.getString("age");
+                tutorialList.add(age);
+
             }
 
             // Get ListView object from xml
