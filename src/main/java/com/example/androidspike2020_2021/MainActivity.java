@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
     String jsonFromServer;
     ListView listView;
     ArrayList<String> tutorialList = new ArrayList<String>();
-    private final static String URL = "https://carlofontanos.com/api/tutorials.php?data=all";
+    private final static String URL = "http://192.168.1.191:8080/api/customers/";
 
 
     @Override
